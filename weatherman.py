@@ -1,4 +1,5 @@
 import os, csv, argparse
+from datetime import datetime
 class WeatherMan:
     def __init__(self, date, max_temp, min_temp, humidity):
         self.date = date
@@ -69,20 +70,71 @@ def extreme_weather(weather_data,year):
     print(f"Highest Temperature is  {highest_temp}C on {highest_temp_date}")
     print(f"Lowest Temperature is  {lowest_temp}C on {lowest_temp_date}")
     print(f"Highest Humidity  is  {highest_humidity} on {highest_humidity_date}")
+def month_weather(weather_data,year,month):
+    month_data=[]
+    for reading in weather_data:
+        if not reading.date:
+            continue
+        parts=reading.date.split("-")
+        data_year=int(parts[0])
+        data_month=int(parts[1])
+        if data_year == year and data_month == month:
+            month_data.append(reading)
+    if not month_data:
+        print("No record found")
+        return
+    max_temp = [r.max_temp for r in month_data if r.max_temp is not None]
+    min_temp = [r.min_temp for r in month_data if r.min_temp is not None]
+    humidity = [r.humidity for r in month_data if r.humidity is not None]
+
+    avg_max = sum(max_temp)/len(max_temp)
+    avg_min = sum(min_temp)/len(min_temp)
+    avg_humidity = sum(humidity)/len(humidity)
+
+    print(f"Highest Average Temperature {avg_max}")
+    print(f"Lowest Average Temperature {avg_max}")
+    print(f"Average Mean Humidity {avg_humidity}%")
+
+def chart_weather(weather_data, year, month):
+    for reading in weather_data:
+        if reading.date.year == year and reading.date.month == month:
+            day = reading.date.day
+            max_temp = int(reading.max_temp) if reading.max_temp else 0
+            min_temp = int(reading.min_temp) if reading.min_temp else 0
+            print(f"{day:02d}: {'+' * max_temp} {max_temp}C   {'-' * min_temp} {min_temp}C")
+
 
 def main():
-    parser = argparse.ArgumentParser(description="WeatherMan Reports")
-    parser.add_argument("path", help="Path to weather files directory")
-    parser.add_argument("-e", "--extreme", help="Report extreme values for a given year (e.g. 2005)")
-    # later we will add -a and -c here
+    parser = argparse.ArgumentParser()
+    parser.add_argument("folder", help="Path to weather files folder")
+    parser.add_argument("-e", help="Yearly report", type=int)
+    parser.add_argument("-a", help="Monthly average report")
+    parser.add_argument("-c", help="Show chart for a specific month")
+
     args = parser.parse_args()
 
-    weather_data = _weather_data(args.path)
+    weather_data = _weather_data(args.folder)
 
-    if args.extreme:
-        extreme_weather(weather_data, int(args.extreme))
+    if args.e:
+        extreme_weather(weather_data, args.e)
+    elif args.a:
+        parts = args.a.split("/")
+        if len(parts) != 2:
+            print("Invalid format ")
+        else:
+            try:
+                year = int(parts[0])
+                month = int(parts[1])
+                month_weather(weather_data, year, month)
+            except ValueError:
+                print("Invalid format ")
+
+    elif args.c:
+        try:
+            year, month = map(int, args.c.split("/"))
+            chart_weather(weather_data, year, month)
+        except ValueError:
+            print("Invalid format for -c. Use YYYY/MM")
+
 if __name__ == "__main__":
     main()
-
-
-
