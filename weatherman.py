@@ -97,9 +97,9 @@ def month_weather(weather_data,year,month):
     avg_min = sum(min_temp)/len(min_temp) if min_temp else None
     avg_humidity = sum(humidity)/len(humidity) if humidity else None
 
-    print(f"Highest Average Temperature {avg_max}")
-    print(f"Lowest Average Temperature {avg_min}")
-    print(f"Average Mean Humidity {avg_humidity}%")
+    print(f"Highest Average Temperature: {round(avg_max,1)}C")
+    print(f"Lowest Average Temperature: {round(avg_min,1)}C")
+    print(f"Average Mean Humidity: {round(avg_humidity,1)}%")
 
 def graph_weather(weather_data, year, month):
     month_data = []
@@ -136,7 +136,7 @@ def main():
     weather_data = _weather_data(args.folder)
     if args.e:
         extreme_weather(weather_data, int(args.e))
-    elif args.a:
+    if args.a:
         parts = args.a.split("/")
         if len(parts) != 2:
             print("Invalid format ")
@@ -147,7 +147,7 @@ def main():
                 month_weather(weather_data, year, month)
             except ValueError:
                 print("Invalid format ")
-    elif args.c:
+    if args.c:
         year, month = map(int, args.c.split("/"))
         graph_weather(weather_data, year, month)
 
