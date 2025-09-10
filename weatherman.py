@@ -1,5 +1,4 @@
 import os, csv, argparse
-from datetime import datetime
 class WeatherMan:
     def __init__(self, date, max_temp, min_temp, humidity):
         self.date = date
@@ -154,5 +153,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-# Weather Man
