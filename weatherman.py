@@ -66,6 +66,7 @@ def extreme_weather(weather_data,year):
             if highest_humidity is None or reading.humidity > highest_humidity:
                 highest_humidity = reading.humidity
                 highest_humidity_date = reading.date
+    print("Year Record")
     print(f"Highest Temperature is  {highest_temp}C on {highest_temp_date}")
     print(f"Lowest Temperature is  {lowest_temp}C on {lowest_temp_date}")
     print(f"Highest Humidity  is  {highest_humidity} on {highest_humidity_date}")
@@ -95,7 +96,7 @@ def month_weather(weather_data,year,month):
     avg_max = sum(max_temp)/len(max_temp) if max_temp else None
     avg_min = sum(min_temp)/len(min_temp) if min_temp else None
     avg_humidity = sum(humidity)/len(humidity) if humidity else None
-
+    print("Average Month Record")
     print(f"Highest Average Temperature: {round(avg_max,1)}C")
     print(f"Lowest Average Temperature: {round(avg_min,1)}C")
     print(f"Average Mean Humidity: {round(avg_humidity,1)}%")
@@ -120,10 +121,10 @@ def graph_weather(weather_data, year, month):
         min_line = ""
         if reading.max_temp is not None:
             max_line = "+" * reading.max_temp
-            print(f"{day} {max_line} {reading.max_temp}C")
         if reading.min_temp is not None:
             min_line = "-" * reading.min_temp
-            print(f"{day} {min_line} {reading.min_temp}C")
+        print(f"{day} {max_line} {reading.max_temp}C")
+        print(f"{day} {min_line} {reading.min_temp}C")
 
 def main():
     parser = argparse.ArgumentParser()
