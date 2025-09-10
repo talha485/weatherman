@@ -1,4 +1,8 @@
-import os, csv, argparse
+import os
+import csv
+import argparse
+
+
 class WeatherMan:
     def __init__(self, date, max_temp, min_temp, humidity):
         self.date = date
@@ -14,6 +18,8 @@ class WeatherMan:
             self.humidity = int(humidity) if humidity else None
         except ValueError:
             self.humidity = None
+
+
 def _weather_data(folder):
     weather_data = []
     for files in os.listdir(folder):
@@ -35,13 +41,15 @@ def _weather_data(folder):
                         print(f"Error Processing Row: {e}")
                         continue
     return weather_data
-def extreme_weather(weather_data,year):
-    filter_data=[]
+
+
+def extreme_weather(weather_data, year):
+    filter_data = []
     for reading in weather_data:
         if not reading.date:
             continue
         parts = reading.date.split("-")
-        data_year=int(parts[0])
+        data_year = int(parts[0])
         if data_year == year:
             filter_data.append(reading)
     if not filter_data:
@@ -70,14 +78,16 @@ def extreme_weather(weather_data,year):
     print(f"Highest Temperature is  {highest_temp}C on {highest_temp_date}")
     print(f"Lowest Temperature is  {lowest_temp}C on {lowest_temp_date}")
     print(f"Highest Humidity  is  {highest_humidity} on {highest_humidity_date}")
-def month_weather(weather_data,year,month):
-    month_data=[]
+
+
+def month_weather(weather_data, year, month):
+    month_data = []
     for reading in weather_data:
         if not reading.date:
             continue
-        parts=reading.date.split("-")
-        data_year=int(parts[0])
-        data_month=int(parts[1])
+        parts = reading.date.split("-")
+        data_year = int(parts[0])
+        data_month = int(parts[1])
         if data_year == year and data_month == month:
             month_data.append(reading)
     if not month_data:
@@ -93,13 +103,14 @@ def month_weather(weather_data,year,month):
             min_temp.append(reading.min_temp)
         if reading.humidity is not None:
             humidity.append(reading.humidity)
-    avg_max = sum(max_temp)/len(max_temp) if max_temp else None
-    avg_min = sum(min_temp)/len(min_temp) if min_temp else None
-    avg_humidity = sum(humidity)/len(humidity) if humidity else None
+    avg_max = sum(max_temp) / len(max_temp) if max_temp else None
+    avg_min = sum(min_temp) / len(min_temp) if min_temp else None
+    avg_humidity = sum(humidity) / len(humidity) if humidity else None
     print("Average Month Record")
-    print(f"Highest Average Temperature: {round(avg_max,1)}C")
-    print(f"Lowest Average Temperature: {round(avg_min,1)}C")
-    print(f"Average Mean Humidity: {round(avg_humidity,1)}%")
+    print(f"Highest Average Temperature: {round(avg_max, 1)}C")
+    print(f"Lowest Average Temperature: {round(avg_min, 1)}C")
+    print(f"Average Mean Humidity: {round(avg_humidity, 1)}%")
+
 
 def graph_weather(weather_data, year, month):
     month_data = []
@@ -126,18 +137,19 @@ def graph_weather(weather_data, year, month):
         print(f"{day} {max_line} {reading.max_temp}C")
         print(f"{day} {min_line} {reading.min_temp}C")
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("folder")
-    parser.add_argument("-e")
-    parser.add_argument("-a")
-    parser.add_argument("-c")
+    parser.add_argument("--yearly_report")
+    parser.add_argument("--monthly_report")
+    parser.add_argument("--bar_chart")
     args = parser.parse_args()
     weather_data = _weather_data(args.folder)
-    if args.e:
-        extreme_weather(weather_data, int(args.e))
-    if args.a:
-        parts = args.a.split("/")
+    if args.yearly_report:
+        extreme_weather(weather_data, int(args.yearly_report))
+    if args.monthly_report:
+        parts = args.monthly_report.split("/")
         if len(parts) != 2:
             print("Invalid format ")
         else:
@@ -147,9 +159,17 @@ def main():
                 month_weather(weather_data, year, month)
             except ValueError:
                 print("Invalid format ")
-    if args.c:
-        year, month = map(int, args.c.split("/"))
-        graph_weather(weather_data, year, month)
+    if args.bar_chart:
+        parts = args.bar_chart.split("/")
+        if len(parts) != 2:
+            print("Invalid format ")
+        else:
+            try:
+                year = int(parts[0])
+                month = int(parts[1])
+                graph_weather(weather_data, year, month)
+            except ValueError:
+                print("Invalid format ")
 
 
 if __name__ == "__main__":
